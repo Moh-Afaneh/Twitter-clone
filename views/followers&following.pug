@@ -1,0 +1,14 @@
+extends layouts/main_layout.pug
+block content 
+  script.
+      const profileUserId = "!{profileUser._id}";
+      const selectedTab = '!{selectedTab}';
+ 
+  .tabsContainer
+    +createTab("Following" , `/profile/${profileUser.username}/following` , selectedTab !== "followers")
+    +createTab("Followers" , `/profile/${profileUser.username}/followers` ,selectedTab === "followers")
+  .resultsContainer
+  
+
+block scripts
+  script(src="/js/followers&following.js")    

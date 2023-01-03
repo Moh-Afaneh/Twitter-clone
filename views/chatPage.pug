@@ -1,0 +1,18 @@
+extends layouts/main_layout.pug
+block content
+  script.
+    const chatId = '!{chat._id}'
+  .chatPageContainer
+    .chatTitleBarContainer
+      +creatChatImage(chat,userLoggedIn)
+      span#chatName(data-bs-toggle="modal" data-bs-target="#chatNameModel") 
+    .mainContentContainer 
+      .chatContainer
+              .chatMessages
+              .footer
+                  textarea#chatMessageFeild(placeholder="Type your Message ...")
+                  button.sendMessageButton
+                      i.fas.fa-paper-plane
+  +chatNameModel(chat)
+block scripts
+  script(src="/js/chatPage.js") 

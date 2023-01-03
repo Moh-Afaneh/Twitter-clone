@@ -1,0 +1,51 @@
+:root {
+  --primary-color-blue: #1fa2f1;
+  --hover-color: #d4edff;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+.loginContainer {
+  background-color: white;
+  width: 80%;
+  max-width: 500px;
+  padding: 20px;
+
+  text-align: center;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  border-bottom: 3px solid #dedede;
+}
+input[type="submit"] {
+  background-color: #0099ff;
+  color: white;
+  border: none;
+  outline: none;
+  border-radius: 50px;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+}
+.logo {
+  color: var(--primary-color-blue);
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+.title-h1 {
+  font-weight: 500;
+  font-size: 30px;
+  margin-bottom: 40px;
+}

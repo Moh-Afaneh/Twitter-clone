@@ -1,0 +1,12 @@
+extends layouts/login_layout.pug
+block content
+  .loginContainer
+    .title-wrapper  
+      p.logo.fas.fa-dove 
+      h1.title-h1 Log in to Twitter
+    form(method="post")
+      p.errorMessage #{errorMessage}
+      input#userName(type="text", name="logUserName" , placeholder="Username or email" , required="" , value=logUserName)
+      input#password(type="password", name="logpassword" , placeholder="Enter your password" , required="")
+      input(type="submit", value="login")
+    a(href="/register") Need an account ? Register now 

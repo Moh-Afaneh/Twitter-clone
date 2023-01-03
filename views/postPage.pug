@@ -1,0 +1,10 @@
+extends layouts/main_layout.pug
+block content
+  script.
+      const postId = `!{postId}`;
+  
+  .postContainer
+  +createPostModels(userLoggedIn)
+
+block scripts
+  script(src="/js/postPage.js") 
