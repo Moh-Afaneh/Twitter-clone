@@ -6,6 +6,18 @@ $(document).ready(() => {
       $("#chatName").text(getChatName(data));
     },
   });
+  $.ajax({
+    url: `/api/chats/${chatId}/messages`,
+    type: "GET",
+    success: (data, status, xhr) => {
+      const messages = [];
+      data.forEach((message) => {
+        const html = createMessageHtml(message);
+        messages.push(html);
+      });
+      const messageHtml = messages.join("");
+    },
+  });
 });
 $(document).ready(() => {
   $("#chatNameModelButton").click((event) => {
@@ -44,6 +56,10 @@ function sendMessage(content) {
     data: { content: content, chatId: chatId },
     success: (message, status, xhr) => {
       console.log(message, xhr.status);
+      if (xhr.status != 201) {
+        $("#chatMessageFeild").val(content);
+        return;
+      }
       outputMessageHtml(message);
     },
   });
@@ -53,5 +69,17 @@ function outputMessageHtml(message) {
     console.log("message is not Valid");
     return;
   }
-  let messageDiv = createMessageHtml();
+  let messageDiv = createMessageHtml(message);
+  $(".chatMessages").append(messageDiv);
+}
+function createMessageHtml(message) {
+  let isMine = message.sender._id === user._id;
+  let liClassName = isMine ? "mine" : "theirs";
+  return `<li class="message ${liClassName}">
+              <div class="messageContainer">
+                  <span class="messageBody">
+                       ${message.content}
+                  </span>
+              </div>
+          </li>`;
 }

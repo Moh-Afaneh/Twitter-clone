@@ -17,8 +17,9 @@ function outputChats(results, container) {
   }
 }
 function creatChatHtml(chatItem) {
+  console.log(chatItem);
   let chatName = getChatName(chatItem); // to do later
-  let lastestMessages = "this is the lastest message"; // to do later
+  let lastestMessages = getlastestMessage(chatItem.lastestMessage);
   let image = getChatImageElement(chatItem); // to do later
   return `
         <a class="resultsListItem" href="/messages/${chatItem._id}">
@@ -29,7 +30,15 @@ function creatChatHtml(chatItem) {
             </div>
         </a>`;
 }
-
+function getlastestMessage(message) {
+  console.log(message);
+  if (message !== undefined) {
+    const sender = message.sender;
+    return `${sender.firstname} ${sender.lastname}: ${message.content}`;
+  } else {
+    return "New chat";
+  }
+}
 function getChatImageElement(chatItem) {
   let otherChatUsers = getOtherChatUsers(chatItem.users);
   let groupChatClass = "";
@@ -45,7 +54,6 @@ function getUserChatImageElement(user) {
     return alert("user passed invalid");
   } else {
     return `
-          <img src ="${user.profilePic}" alt="user profile pic"/>
-          `;
+<img src ="${user.profilePic}" alt="user profile pic"/>`;
   }
 }

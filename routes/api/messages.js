@@ -3,6 +3,7 @@ const app = express();
 const messageApiRouter = express.Router();
 import bodyParser from "body-parser";
 import Message from "../../schemas/Message.js";
+import Chat from "../../schemas/Chat.js";
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -19,10 +20,15 @@ messageApiRouter.post("/", async (req, res, next) => {
       content: req.body.content,
       chat: req.body.chatId,
     };
-    const messageCreated = await Message.create(newMessage);
+    let messageCreated = await Message.create(newMessage);
+    messageCreated = await Message.populate(messageCreated, { path: "sender" });
+    messageCreated = await Message.populate(messageCreated, { path: "chat" });
+    await Chat.findByIdAndUpdate(req.body.chatId, {
+      lastestMessage: messageCreated,
+    });
     res.status(201).send(messageCreated);
   } catch (error) {
-    throw new Error(error);
+    console.log(error);
   }
 });
 

@@ -3,21 +3,41 @@ const app = express();
 const chatRouter = express.Router();
 import bodyParser from "body-parser";
 import Chat from "../../schemas/Chat.js";
+import User from "../../schemas/User.js";
+import Message from "../../schemas/Message.js";
 app.use(
   bodyParser.urlencoded({
     extended: false,
   })
 );
 chatRouter.get("/", async (req, res, next) => {
-  try {
-    const foundChat = await Chat.find({
-      users: { $elemMatch: { $eq: req.session.user._id } },
+  Chat.find({
+    users: { $elemMatch: { $eq: req.session.user._id } },
+  })
+    .populate("users")
+    .populate("lastestMessage")
+    .sort({ updatedAt: -1 })
+    .then(async (results) => {
+      results = await User.populate(results, { path: "lastestMessage.sender" });
+      console.log(results);
+      res.status(200).send(results);
     })
-      .sort({ updatedAt: -1 })
-      .populate("users");
-    res.status(200).send(foundChat);
+    .catch((err) => {
+      console.log(err);
+    });
+});
+// /api/chats/${chatId}/messages
+chatRouter.get("/:id/messages", async (req, res, next) => {
+  try {
+    let id = req.params.id;
+    const message = await Message.find({ chat: id }).populate("sender");
+    if (!message) {
+      throw new Error("no message were found");
+    }
+    res.status(200).send(message);
   } catch (error) {
-    throw new Error(error);
+    let payload = { errorMessage: error };
+    res.render("errorPage", payload);
   }
 });
 chatRouter.get("/:id", async (req, res, next) => {
