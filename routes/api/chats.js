@@ -19,7 +19,6 @@ chatRouter.get("/", async (req, res, next) => {
     .sort({ updatedAt: -1 })
     .then(async (results) => {
       results = await User.populate(results, { path: "lastestMessage.sender" });
-      console.log(results);
       res.status(200).send(results);
     })
     .catch((err) => {

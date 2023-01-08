@@ -1,12 +1,57 @@
-extends layouts/login_layout.pug
-block content
-  .loginContainer
-    .title-wrapper  
-      p.logo.fas.fa-dove 
-      h1.title-h1 Log in to Twitter
-    form(method="post")
-      p.errorMessage #{errorMessage}
-      input#userName(type="text", name="logUserName" , placeholder="Username or email" , required="" , value=logUserName)
-      input#password(type="password", name="logpassword" , placeholder="Enter your password" , required="")
-      input(type="submit", value="login")
-    a(href="/register") Need an account ? Register now 
+doctype html
+head
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  meta(name='author' content='Omar Faruk')
+  meta(name='description' content='')
+  meta(name='keywords' content='LMS, Classnote, Mentors helpline')
+  title Sign up
+  link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi' crossorigin='anonymous')
+  // icon fonts
+  link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css')
+  // google fonts
+  link(rel='preconnect' href='https://fonts.googleapis.com')
+  link(rel='preconnect' href='https://fonts.gstatic.com' crossorigin='')
+  link(href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap' rel='stylesheet')
+  // custom css
+  link(rel='stylesheet' type='text/css' href='/css/login.css')
+
+  // login start
+  .container.lin(style='z-index: 9999;')
+    .row
+      .col-md-2
+      .col-md-8
+        .row.login-main
+          .col-md-6.p-0
+            .login-left
+              div
+                img#logo(src='/images/twitter-512.png')
+                h2 Please Sign in to continue!
+                p
+                  | We will verify your account and you will get an activation email from admin. You can check your course details and progress from your profile page.
+                .line
+          .col-md-6.p-0
+            .login-right
+              form.login-form(action='' method='POST' enctype='multiple/form-data')
+                h2 Sign In
+                p Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                .form-group.one
+                  label E-mail
+                  input#userName.form-control(type="text", name="logUserName" , placeholder="Username or email" , required="" , value=logUserName)
+                .form-group.two
+                  label Password
+                  input#password.form-control(type="password", name="logpassword" , placeholder="Enter your password" , required="")
+                .mb-3
+                  span
+                    | Dont have an account? 
+                    a(href='/register') Register
+                .form-group
+                  input.login-btn(type='submit' name='' value='Login')
+      .col-md-2
+  // login end
+  
+// banner section code end
+script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3' crossorigin='anonymous')
+script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js')
+// custom js
+script(type='text/javascript' src='/js/login.js')

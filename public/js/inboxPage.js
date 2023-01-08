@@ -1,5 +1,6 @@
 $(document).ready(() => {
   $.get("/api/chats", (Data, status, xhr) => {
+    console.log(Data);
     if (xhr.status === 404) {
       console.log("something went wrong");
     } else {
@@ -17,7 +18,6 @@ function outputChats(results, container) {
   }
 }
 function creatChatHtml(chatItem) {
-  console.log(chatItem);
   let chatName = getChatName(chatItem); // to do later
   let lastestMessages = getlastestMessage(chatItem.lastestMessage);
   let image = getChatImageElement(chatItem); // to do later
@@ -31,7 +31,6 @@ function creatChatHtml(chatItem) {
         </a>`;
 }
 function getlastestMessage(message) {
-  console.log(message);
   if (message !== undefined) {
     const sender = message.sender;
     return `${sender.firstname} ${sender.lastname}: ${message.content}`;
@@ -50,10 +49,10 @@ function getChatImageElement(chatItem) {
   return `<div class="resultsImageContainer ${groupChatClass}">${chatImage}</div>`;
 }
 function getUserChatImageElement(user) {
+  console.log(user);
   if (!user || !user.profilePic) {
     return alert("user passed invalid");
   } else {
-    return `
-<img src ="${user.profilePic}" alt="user profile pic"/>`;
+    return `<img src ="${user.profilePic}" alt="user profile pic"/>`;
   }
 }

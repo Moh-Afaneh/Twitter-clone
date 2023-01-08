@@ -2,6 +2,7 @@
 let cropper;
 let timer;
 let selectedUsers = [];
+// SIGN IN FORM
 
 function outputPosts(results, container) {
   container.html("");
@@ -31,7 +32,6 @@ function outputUsers(data, container) {
   }
 }
 function createUserHtml(userData, showFollowButton) {
-  console.log(user);
   const name = userData.firstname + " " + userData.lastname;
   let followButton = "";
   let isFollowing = user.following && user.following.includes(userData._id);
@@ -103,7 +103,6 @@ function outputSelectableUsers(results, container) {
         return u._id == result._id;
       })
     ) {
-      console.log("hello");
       return;
     }
     const html = createUserHtml(result, false);
@@ -123,7 +122,6 @@ function userSelected(user) {
   $("#userSearchTextBox").val("").focus();
   $(".resultsContainer").html("");
   $("#createChatButton").prop("disabled", false);
-  console.log(selectedUsers);
 }
 function updateSelectedUsersHtml() {
   let elements = [];
@@ -183,7 +181,6 @@ $("#submitPostButton , #submitReplayButton").click((event) => {
   };
   if (isModel) {
     const id = btn.data().id;
-    if (!id) return console.log("there isn't any id");
     data.replyTo = id;
   }
   $.post("/api/posts", data, (postData) => {
@@ -224,7 +221,7 @@ $("#deletePostModel").on("show.bs.modal", (event) => {
 
 $("#PinnedModelButton").click((event) => {
   const postId = $(event.target).data("id");
-  console.log(postId);
+
   $.ajax({
     url: `/api/posts/${postId}`,
     data: { pinned: true },
@@ -238,7 +235,7 @@ $("#editPostModel").on("show.bs.modal", (event) => {
   const btn = $(event.relatedTarget);
   const postId = getPostIdFromElemenet(btn);
   $("#editPostButton").data("id", postId);
-  console.log(postId);
+
   const textbox = $("#editPostArea");
   $("#editPostButton").data("post", postId);
   $("#submitReplayButton").data("id", postId);
@@ -255,7 +252,6 @@ $("#editPostButton").click((event) => {
     content: textbox.val(),
   };
 
-  console.log(data, postId);
   $.ajax({
     url: `/api/posts/${postId}`,
     type: "PUT",
@@ -267,7 +263,7 @@ $("#editPostButton").click((event) => {
 });
 $("#unpinnedModelButton").click((event) => {
   const postId = $(event.target).data("id");
-  console.log(postId);
+
   $.ajax({
     url: `/api/posts/${postId}`,
     data: { pinned: false },
@@ -279,7 +275,7 @@ $("#unpinnedModelButton").click((event) => {
 });
 $("#deletePostButton").click((event) => {
   const postId = $(event.target).data("id");
-  console.log(postId);
+
   $.ajax({
     url: `/api/posts/${postId}`,
     type: "DELETE",
@@ -292,7 +288,7 @@ $("#deletePostButton").click((event) => {
 $("#filePhoto").change((event) => {
   const input = event.target;
   const image = document.getElementById("imagePreview");
-  console.log(input);
+
   if (input.files && input.files[0]) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -311,7 +307,7 @@ $("#filePhoto").change((event) => {
 $("#coverPhoto").change((event) => {
   const input = event.target;
   const image = document.getElementById("coverPreview");
-  console.log(input);
+
   if (input.files && input.files[0]) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -335,7 +331,7 @@ $("#UploadCoverButton").click((event) => {
   canvas.toBlob((blob) => {
     const formData = new FormData();
     formData.append("croppedImage", blob);
-    console.log(formData);
+
     $.ajax({
       url: "/api/users/coverPhoto",
       type: "POST",
@@ -343,7 +339,6 @@ $("#UploadCoverButton").click((event) => {
       processData: false,
       contentType: false,
       success: (data) => {
-        console.log(data);
         location.reload();
       },
     });
@@ -357,7 +352,7 @@ $("#UploadImageButton").click((event) => {
   canvas.toBlob((blob) => {
     const formData = new FormData();
     formData.append("croppedImage", blob);
-    console.log(formData);
+
     $.ajax({
       url: "/api/users/profilePicture",
       type: "POST",
@@ -394,12 +389,11 @@ $(document).on("click", ".likeButton", (event) => {
 $(document).on("click", ".followButton", (event) => {
   const btn = $(event.target);
   const id = btn.data().user;
-  console.log(id);
+
   $.ajax({
     url: `/api/users/${id}/follow`,
     type: "PUT",
     success: (userData) => {
-      console.log(userData);
       let diff = 1;
       if (userData.following && userData.following.includes(id)) {
         btn.addClass("following");
@@ -410,7 +404,7 @@ $(document).on("click", ".followButton", (event) => {
         diff = -1;
       }
       const followingValue = $("#followersValue");
-      console.log(followingValue);
+
       if (followingValue.length !== 0) {
         let followingText = followingValue.text();
         followingValue.text(parseInt(followingText) + diff);
@@ -473,7 +467,14 @@ function getPostIdFromElemenet(element) {
 }
 function createPostHtml(postData, largeFont = false) {
   const postedBy = postData?.postedBy;
+
   if (postData === null) return;
+  let href = "";
+  if (user._id === postedBy._id) {
+    href = "";
+  } else {
+    href = "/" + postedBy.username;
+  }
   const isRetweet = postData.retweetsData !== undefined;
   const retweetedBy = isRetweet ? postData.postedBy.username : null;
   postData = isRetweet ? postData.retweetsData : postData;
@@ -498,7 +499,6 @@ function createPostHtml(postData, largeFont = false) {
   }
   let replyToFlag = "";
   if (postData.replyTo && postData.replyTo._id) {
-    if (!postData.replyTo._id) console.log("Reply is not yet populated");
     const replyToUsername = postData?.replyTo?.postedBy?.username;
     replyToFlag = !replyToUsername
       ? ""
@@ -521,9 +521,9 @@ function createPostHtml(postData, largeFont = false) {
                   <i class="fa-solid fa-ellipsis"></i>
                   </div>
                   <ul class="dropdown-menu">
-                    <li class="fontBigger delete"><button data-id=${postData._id} data-bs-toggle="modal" data-bs-target="#deletePostModel"><i class="fa-solid fa-trash delete"></i></button><p>Delete</p></li>
-                    <li class="fontBigger"><button data-id=${postData._id} data-bs-toggle="modal" data-bs-target="${dataTarget}"><i class="fa-solid fa-thumbtack"></i></button><p>Pin to your profile</p></li>
-                    <li class="fontBigger"><button data-post=${postData} data-bs-toggle="modal" data-bs-target="#editPostModel"><i class="fa-solid fa-pen-to-square"></i></button><p>Edit post</p></li>
+                    <li class="fontBigger delete" data-id=${postData._id} data-bs-toggle="modal" data-bs-target="#deletePostModel"><button ><i class="fa-solid fa-trash delete"></i></button><p>Delete</p></li>
+                    <li class="fontBigger" data-id=${postData._id} data-bs-toggle="modal" data-bs-target="${dataTarget}"><button><i class="fa-solid fa-thumbtack"></i></button><p>Pin post</p></li>
+                    <li class="fontBigger" data-post=${postData} data-bs-toggle="modal" data-bs-target="#editPostModel"><button ><i class="fa-solid fa-pen-to-square"></i></button><p>Edit post</p></li>
                     <li class="fontBigger"><button ><i class="fa-solid fa-eye"></i></button><p class="view">View post</p></li>
                   </ul>
                 </div> `;
@@ -537,9 +537,7 @@ function createPostHtml(postData, largeFont = false) {
                   <div class="postContentContainer">
                       <div class="pinnedPost">${pinnedPost}</div>
                       <div class="header">
-                          <a class="displayName" href="/profile/${
-                            postedBy.username
-                          }">${displayName}</a>
+                          <a class="displayName" href="/profile${href}">${displayName}</a>
                           <span class="username">@${postedBy.username}</span>
                           <span class="date">${timestamp}</span>
                           </div>

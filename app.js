@@ -1,3 +1,4 @@
+import database from "./database.js";
 import express from "express";
 import * as dotenv from "dotenv";
 import requireLogin from "./middleware/middleware.js";
@@ -12,11 +13,13 @@ import registerRouter from "./routes/registerRoutes.js";
 import searchRouter from "./routes/searchRoutes.js";
 import bodyParser from "body-parser";
 import session from "express-session";
-import database from "./database.js";
+import favicon from "serve-favicon";
 import path from "path";
 import userRouter from "./routes/api/users.js";
 import chatRouter from "./routes/api/chats.js";
 import messageApiRouter from "./routes/api/messages.js";
+import { Server } from "socket.io";
+
 dotenv.config();
 const app = express();
 app.set("view engine", "pug");
@@ -39,6 +42,7 @@ const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`listening to ${port} right now`);
 });
+app.use(favicon(__dirname + "/public/images/twitter.png"));
 //api
 app.use("/api/messages", messageApiRouter);
 app.use("/api/users", userRouter);
@@ -64,3 +68,9 @@ app.get("/", requireLogin, (req, res, next) => {
 });
 //last 404 page
 app.get("*", (req, res) => res.render("errorPage"));
+const io = new Server(server);
+io.on("connection", (socket) => {
+  socket.on("setup", (userdata) => {
+    console.log(userdata.firstname);
+  });
+});

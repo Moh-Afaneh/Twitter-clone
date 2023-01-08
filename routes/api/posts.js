@@ -20,7 +20,7 @@ router.get("/", async (req, res, next) => {
   }
   if (searchObject.search !== undefined) {
     searchObject.content = { $regex: searchObject.search, $options: "i" };
-    console.log(searchObject);
+
     delete searchObject.search;
   }
   if (searchObject.followingOnly !== undefined) {
@@ -35,7 +35,6 @@ router.get("/", async (req, res, next) => {
       });
       objectIds.push(req.session.user._id);
       searchObject.postedBy = { $in: objectIds };
-      console.log(searchObject);
     }
     delete searchObject.isFollowing;
   }
@@ -44,7 +43,6 @@ router.get("/", async (req, res, next) => {
 });
 router.put("/:id", async (req, res, next) => {
   const id = req.params.id;
-  console.log(req.body);
   if (req.body.pinned !== undefined) {
     await Post.updateMany(
       { postedBy: req.session.user },
@@ -87,7 +85,6 @@ router.get("/:id", async (req, res, next) => {
   } catch (error) {}
 });
 router.post("/", async (req, res, next) => {
-  console.log(req.body.replyTo);
   if (!req.body.content) {
     return res.sendStatus(401);
   }

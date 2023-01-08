@@ -63,7 +63,6 @@ router.get("/:chatId", async (req, res, next) => {
   }
 });
 function getChatByUserId(userLoggedInID, OtheUserID) {
-  console.log(" the id's are :" + userLoggedInID, OtheUserID);
   return Chat.findOneAndUpdate(
     {
       isChatGroup: false,

@@ -12,7 +12,6 @@ app.use(
 messageApiRouter.post("/", async (req, res, next) => {
   try {
     if (!req.body.content || !req.body.chatId) {
-      console.log("invalid data passed to request");
       res.sendStatus(400);
     }
     const newMessage = {
