@@ -4,6 +4,7 @@ const userRouter = express.Router();
 import bodyParser from "body-parser";
 import multer from "multer";
 import path from "path";
+import Notification from "../../schemas/Notifications.js";
 import User from "../../schemas/User.js";
 import fs from "fs";
 app.use(
@@ -132,6 +133,14 @@ userRouter.put("/:userId/follow", async (req, res, next) => {
     await User.findByIdAndUpdate(id, {
       [option]: { followers: req.session.user._id },
     });
+    if (!isFollowing) {
+      await Notification.insertNotification(
+        id,
+        req.session.user._id,
+        "follow",
+        req.session.user._id
+      );
+    }
     res.status(200).send(req.session.user);
   } catch (error) {
     throw new Error(error);

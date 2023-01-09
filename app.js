@@ -19,6 +19,8 @@ import userRouter from "./routes/api/users.js";
 import chatRouter from "./routes/api/chats.js";
 import messageApiRouter from "./routes/api/messages.js";
 import { Server } from "socket.io";
+import notificationsRouter from "./routes/api/notifications.js";
+import notificationsRoutes from "./routes/notificationsRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -44,6 +46,7 @@ const server = app.listen(port, () => {
 });
 app.use(favicon(__dirname + "/public/images/twitter.png"));
 //api
+app.use("/api/notifications", notificationsRouter);
 app.use("/api/messages", messageApiRouter);
 app.use("/api/users", userRouter);
 app.use("/api/chats", chatRouter);
@@ -51,6 +54,7 @@ app.use("/api/posts", postApiRouter);
 //api
 app.use("/search", requireLogin, searchRouter);
 app.use("/uploads", uploadRouter);
+app.use("/notifications", requireLogin, notificationsRoutes);
 app.use("/messages", requireLogin, messagesRouter);
 app.use("/profile", requireLogin, profileRouter);
 app.use("/posts", requireLogin, postRouter);

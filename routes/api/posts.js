@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import Post from "../../schemas/Posts.js";
 import User from "../../schemas/User.js";
+import Notification from "../../schemas/Notifications.js";
 const app = express();
 const router = express.Router();
 app.use(
@@ -98,6 +99,15 @@ router.post("/", async (req, res, next) => {
   Post.create(postData)
     .then(async (data) => {
       data = await User.populate(data, { path: "postedBy" });
+      data = await Post.populate(data, { path: "replyTo" });
+      if (data.replyTo !== undefined) {
+        await Notification.insertNotification(
+          data.replyTo.postedBy,
+          req.session.user._id,
+          "reply",
+          data._id
+        );
+      }
       res.status(201).send(data);
     })
     .catch((err) => {});
@@ -126,6 +136,14 @@ router.put("/:id/like", async (req, res, next) => {
   ).catch((err) => {
     res.sendStatus(400);
   });
+  if (!isLiked) {
+    await Notification.insertNotification(
+      post.postedBy,
+      userId,
+      "like",
+      post._id
+    );
+  }
   res.status(200).send(post);
 });
 router.post("/:id/retweet", async (req, res, next) => {
@@ -161,6 +179,14 @@ router.post("/:id/retweet", async (req, res, next) => {
   ).catch((err) => {
     res.sendStatus(400);
   });
+  if (!deletedPost) {
+    await Notification.insertNotification(
+      post.postedBy,
+      userId,
+      "retweet",
+      post._id
+    );
+  }
   res.status(200).send(post);
 });
 async function getPosts(fitler) {
