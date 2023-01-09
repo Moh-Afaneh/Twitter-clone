@@ -1,6 +1,5 @@
 $(document).ready(() => {
   $.get("/api/chats", (Data, status, xhr) => {
-    console.log(Data);
     if (xhr.status === 404) {
       console.log("something went wrong");
     } else {
@@ -49,7 +48,6 @@ function getChatImageElement(chatItem) {
   return `<div class="resultsImageContainer ${groupChatClass}">${chatImage}</div>`;
 }
 function getUserChatImageElement(user) {
-  console.log(user);
   if (!user || !user.profilePic) {
     return alert("user passed invalid");
   } else {

@@ -23,13 +23,14 @@
 .login-left {
   /*  background: linear-gradient(-45deg, #1D1CE5, #0008C1, #021d7b, #153462);*/
   background: linear-gradient(-45deg, #039fd3, #039fd3, #039fd3, #153462);
-  background-image: url("/images/loginPic.png");
+  background-image: url("/images/loginPic.jpg");
   background-size: cover;
   animation: gradient 15s ease infinite;
   height: 500px;
   display: flex;
   align-items: center;
   padding: 58px;
+  position: relative;
 }
 .login-right {
   background-color: white;
@@ -63,7 +64,14 @@
 
 .login-right h2 {
   font-size: 32px;
-  color: black;
+  color: white;
+}
+.textLower {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  padding: 2px;
+  word-break: break-all;
 }
 .login-right p {
   margin-bottom: 32px;

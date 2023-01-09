@@ -1,9 +1,18 @@
+let typing = false;
+let lastTypingTime;
 $(document).ready(() => {
+  socket.emit("join room", chatId);
+  socket.on("typing", () => {
+    $(".typingDots").show();
+  });
+  socket.on("stop typing", () => {
+    $(".typingDots").hide();
+  });
+
   $.ajax({
     url: "/api/chats/" + chatId,
     type: "GET",
     success: (data, status, xhr) => {
-      console.log(data);
       $("#chatName").text(getChatName(data));
     },
   });
@@ -11,7 +20,6 @@ $(document).ready(() => {
     url: `/api/chats/${chatId}/messages`,
     type: "GET",
     success: (data, status, xhr) => {
-      console.log(data);
       const messages = [];
       let lastestSenderId = "";
       data.forEach((message, index) => {
@@ -24,7 +32,7 @@ $(document).ready(() => {
         lastestSenderId = message.sender._id;
       });
       const messageHtml = messages.join("");
-      addmMessageHtmlToPage(messageHtml);
+      addMessagesHtmlToPage(messageHtml);
       scrollToBottom(false);
     },
   });
@@ -43,11 +51,31 @@ $(document).ready(() => {
   });
 });
 $("#chatMessageFeild").keydown((event) => {
+  updateTyping();
   if (event.which === 13) {
     submitSendMessage();
+    typing = false;
+    socket.emit("stop typing", chatId);
     return false;
   }
 });
+function updateTyping() {
+  if (!connected) return;
+  if (!typing) {
+    typing = true;
+    socket.emit("typing", chatId);
+  }
+  lastTypingTime = new Date().getTime();
+  let timerLength = 1000;
+  setTimeout(() => {
+    let timeNow = new Date().getTime();
+    let timeDiff = timeNow - lastTypingTime;
+    if (timeDiff >= timerLength && typing) {
+      typing = false;
+      socket.emit("stop typing", chatId);
+    }
+  }, timerLength);
+}
 $(".sendMessageButton").click((event) => {
   submitSendMessage();
 });
@@ -69,6 +97,10 @@ function sendMessage(content) {
         return;
       }
       outputMessageHtml(message);
+      if (connected) {
+        console.log("connected");
+        socket.emit("send message", message);
+      }
     },
   });
 }
@@ -76,9 +108,11 @@ function outputMessageHtml(message) {
   if (!message || !message._id) {
     return;
   }
-  createMessageHtml(message, null, "");
+  var messageDiv = createMessageHtml(message, null, "");
+  addMessagesHtmlToPage(messageDiv);
+  scrollToBottom(true);
 }
-function addmMessageHtmlToPage(html) {
+function addMessagesHtmlToPage(html) {
   $(".chatMessages").append(html);
   scrollToBottom(true);
   // scroll to bottom
@@ -92,7 +126,6 @@ function createMessageHtml(message, nextMessage, lastSenderId) {
   let isFirst = lastSenderId != currentSenderId;
   let isLast = nextSenderId != currentSenderId;
   let isMine = message.sender._id === user._id;
-  console.log(currentSenderId, lastSenderId, nextSenderId);
   let liClassName = isMine ? "mine" : "theirs";
   let nameElement = "";
   if (isFirst) {
@@ -124,10 +157,17 @@ function createMessageHtml(message, nextMessage, lastSenderId) {
 function scrollToBottom(animated) {
   const container = $(".chatMessages");
   const scrollNum = container[0].scrollHeight;
-  console.log(scrollNum);
   if (animated) {
     container.animate({ scrollTop: scrollNum }, "slow");
   } else {
     container.scrollTop(scrollNum);
+  }
+}
+function messageReceived(message) {
+  if ($(".chatContainer").length === 0) {
+    // show popup window
+  } else {
+    console.log("hellloooooooooo man");
+    outputMessageHtml(message);
   }
 }

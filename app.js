@@ -71,6 +71,21 @@ app.get("*", (req, res) => res.render("errorPage"));
 const io = new Server(server);
 io.on("connection", (socket) => {
   socket.on("setup", (userdata) => {
-    console.log(userdata.firstname);
+    socket.join(userdata._id);
+    socket.emit("connected");
+  });
+  socket.on("join room", (chatId) => socket.join(chatId));
+  socket.on("typing", (chatId) => socket.in(chatId).emit("typing"));
+  socket.on("stop typing", (chatId) => socket.in(chatId).emit("stop typing"));
+
+  // Real time messages
+  socket.on("send message", (message) => {
+    const chat = message.chat;
+    if (!chat.users) return console.log("Chat.users is undefined");
+    chat.users.forEach((user) => {
+      if (user._id === message.sender._id) return;
+      console.log(user._id);
+      socket.in(user._id).emit("messageReceived", message);
+    });
   });
 });

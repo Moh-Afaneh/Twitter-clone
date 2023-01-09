@@ -4,6 +4,7 @@ const messageApiRouter = express.Router();
 import bodyParser from "body-parser";
 import Message from "../../schemas/Message.js";
 import Chat from "../../schemas/Chat.js";
+import User from "../../schemas/User.js";
 app.use(
   bodyParser.urlencoded({
     extended: false,
@@ -22,6 +23,9 @@ messageApiRouter.post("/", async (req, res, next) => {
     let messageCreated = await Message.create(newMessage);
     messageCreated = await Message.populate(messageCreated, { path: "sender" });
     messageCreated = await Message.populate(messageCreated, { path: "chat" });
+    messageCreated = await User.populate(messageCreated, {
+      path: "chat.users",
+    });
     await Chat.findByIdAndUpdate(req.body.chatId, {
       lastestMessage: messageCreated,
     });
