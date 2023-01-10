@@ -5,7 +5,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "watch:js": "parcel watch public/js/common.js",
+    "build:js": "parcel build public/js/common.js"
   },
   "author": "",
   "license": "ISC",
@@ -26,5 +28,8 @@
     "pug": "^3.0.2",
     "serve-favicon": "^2.5.0",
     "socket.io": "^4.5.4"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.2"
   }
 }
