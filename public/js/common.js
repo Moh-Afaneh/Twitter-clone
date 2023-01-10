@@ -594,26 +594,29 @@ function timeDifference(current, previous) {
     return Math.round(elapsed / msPerYear) + " years ago";
   }
 }
-const signUpButton = document.getElementById("signUp");
-const signInButton = document.getElementById("signIn");
-const container = document.getElementById("container");
-
-signUpButton.addEventListener("click", () => {
-  container.classList.add("right-panel-active");
-});
-
-signInButton.addEventListener("click", () => {
-  container.classList.remove("right-panel-active");
-});
-
-function myFunction___ad() {
-  var signIn = document.getElementById("container");
-  signIn.classList.toggle("sign-in-container__show");
-  signIn.classList.remove("sign-up-container__show");
+function markNotificationsAsOpened(notificationId = null, callback = null) {
+  if (callback === null) {
+    callback = () => location.reload();
+  }
+  let url =
+    notificationId !== null
+      ? `/api/notifications/${notificationId}/markAsOpened`
+      : `/api/notifications/markAsOpened`;
+  $.ajax({
+    url,
+    type: "PUT",
+    success: () => callback(),
+  });
 }
-
-function myFunction___hi() {
-  var signUp = document.getElementById("container");
-  signUp.classList.toggle("sign-up-container__show");
-  signUp.classList.remove("sign-in-container__show");
-}
+$(document).on("click", ".notification.active", (e) => {
+  const container = $(e.target);
+  const notificationId = container.data().id;
+  const href = container.attr("href");
+  e.preventDefault();
+  const callback = () => (window.location = href);
+  markNotificationsAsOpened(notificationId, callback);
+});
+$("#marknotificationsAsRead").click(() => {
+  markNotificationsAsOpened();
+  $("#marknotificationsAsRead").css("color", "#1fa2f1");
+});

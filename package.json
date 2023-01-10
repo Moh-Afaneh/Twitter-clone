@@ -5,9 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "node app.js",
-    "watch:js": "parcel watch public/js/common.js",
-    "build:js": "parcel build public/js/common.js"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",

@@ -23,5 +23,31 @@ notificationsRouter.get("/", async (req, res, next) => {
     res.sendStatus(400);
   }
 });
+notificationsRouter.put("/:id/markAsOpened", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    await Notification.findByIdAndUpdate(id, { opened: true });
+    res.status(204).send("updated");
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+
+notificationsRouter.put("/markAsOpened", async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    await Notification.updateMany(
+      { userTo: req.session.user._id },
+      { opened: true }
+    );
+    res.status(204).send("updated");
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
 
 export default notificationsRouter;
