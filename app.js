@@ -81,6 +81,9 @@ io.on("connection", (socket) => {
   socket.on("join room", (chatId) => socket.join(chatId));
   socket.on("typing", (chatId) => socket.in(chatId).emit("typing"));
   socket.on("stop typing", (chatId) => socket.in(chatId).emit("stop typing"));
+  socket.on("notification received", (room) =>
+    socket.in(room).emit("notification received")
+  );
 
   // Real time messages
   socket.on("send message", (message) => {

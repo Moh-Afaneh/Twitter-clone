@@ -3,7 +3,10 @@ let cropper;
 let timer;
 let selectedUsers = [];
 // SIGN IN FORM
-
+$(document).ready(() => {
+  refreshMessagesBagde();
+  refreshNotificationsBagde();
+});
 function outputPosts(results, container) {
   container.html("");
   if (!Array.isArray(results)) {
@@ -185,6 +188,7 @@ $("#submitPostButton , #submitReplayButton").click((event) => {
   $.post("/api/posts", data, (postData) => {
     if (postData) $(".noResults").remove();
     if (postData.replyTo) {
+      emitNotification(postData.replyTo.postedBy);
       location.reload();
     } else {
       const html = createPostHtml(postData);
@@ -379,6 +383,7 @@ $(document).on("click", ".likeButton", (event) => {
       btn.find("span").text(postData.likes.length || "");
       if (postData.likes.includes(user._id)) {
         btn.addClass("active");
+        emitNotification(postData.postedBy);
       } else {
         btn.removeClass("active");
       }
@@ -397,6 +402,7 @@ $(document).on("click", ".followButton", (event) => {
       if (userData.following && userData.following.includes(id)) {
         btn.addClass("following");
         btn.text("Following");
+        emitNotification(id);
       } else {
         btn.removeClass("following");
         btn.text("Follow");
@@ -422,6 +428,7 @@ $(document).on("click", ".retweetButton", (event) => {
       btn.find("span").text(postData.retweetsUsers.length || "");
       if (postData.retweetsUsers.includes(user._id)) {
         btn.addClass("active");
+        emitNotification(postData.postedBy);
       } else {
         btn.removeClass("active");
       }
@@ -594,6 +601,7 @@ function timeDifference(current, previous) {
     return Math.round(elapsed / msPerYear) + " years ago";
   }
 }
+
 function markNotificationsAsOpened(notificationId = null, callback = null) {
   if (callback === null) {
     callback = () => location.reload();
@@ -618,5 +626,35 @@ $(document).on("click", ".notification.active", (e) => {
 });
 $("#marknotificationsAsRead").click(() => {
   markNotificationsAsOpened();
-  $("#marknotificationsAsRead").css("color", "#1fa2f1");
 });
+function messageReceived(message) {
+  if ($(".chatContainer").length === 0) {
+    // show popup window
+  } else {
+    outputMessageHtml(message);
+  }
+  refreshMessagesBagde();
+}
+function refreshMessagesBagde() {
+  $.get("/api/chats", { unreadOnly: true }, (data) => {
+    let numResults = data.length;
+
+    if (numResults > 0) {
+      $("#messagesBadge").text(numResults).addClass("active");
+    } else {
+      $("#messagesBadge").text("").removeClass("active");
+    }
+  });
+}
+function refreshNotificationsBagde() {
+  $.get("/api/notifications", { unreadOnly: true }, (data) => {
+    let numResults = data.length;
+    console.log(numResults, data);
+    if (numResults > 0) {
+      $("#notificationsBadge").text(numResults).addClass("active");
+    } else {
+      $("#notificationsBadge").text("").removeClass("active");
+      //notificationsBadge
+    }
+  });
+}

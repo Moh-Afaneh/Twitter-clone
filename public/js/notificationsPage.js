@@ -10,7 +10,7 @@ function outputNotifications(notifications, continer) {
     continer.append(html);
   });
   if (notifications.length === 0) {
-    continer.append("<span class='noResutls'>Nothing to show</span>");
+    continer.append("<span class='noResults'>Nothing to show</span>");
   }
 }
 function creatNotifcationHtml(notification) {

@@ -8,11 +8,31 @@ app.use(
     extended: false,
   })
 );
+
 notificationsRouter.get("/", async (req, res, next) => {
   try {
-    const foundNotification = await Notification.find({
+    const searchObj = {
       userTo: req.session.user._id,
       notificationType: { $ne: "New message" },
+    };
+    if (req.query.unreadOnly !== undefined && req.query.unreadOnly === "true") {
+      searchObj.opened = false;
+    }
+
+    const foundNotification = await Notification.find(searchObj)
+      .populate("userTo")
+      .populate("userForm")
+      .sort({ createdAt: -1 });
+    res.status(200).send(foundNotification);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(400);
+  }
+});
+notificationsRouter.get("/lastest", async (req, res, next) => {
+  try {
+    const foundNotification = await Notification.findOne({
+      userTo: req.session.user._id,
     })
       .populate("userTo")
       .populate("userForm")
@@ -26,11 +46,9 @@ notificationsRouter.get("/", async (req, res, next) => {
 notificationsRouter.put("/:id/markAsOpened", async (req, res, next) => {
   try {
     const id = req.params.id;
-    console.log(id);
     await Notification.findByIdAndUpdate(id, { opened: true });
     res.status(204).send("updated");
   } catch (error) {
-    console.log(error);
     res.sendStatus(400);
   }
 });
@@ -38,14 +56,12 @@ notificationsRouter.put("/:id/markAsOpened", async (req, res, next) => {
 notificationsRouter.put("/markAsOpened", async (req, res, next) => {
   try {
     const id = req.params.id;
-    console.log(id);
     await Notification.updateMany(
       { userTo: req.session.user._id },
       { opened: true }
     );
     res.status(204).send("updated");
   } catch (error) {
-    console.log(error);
     res.sendStatus(400);
   }
 });

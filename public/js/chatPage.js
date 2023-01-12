@@ -163,11 +163,3 @@ function scrollToBottom(animated) {
     container.scrollTop(scrollNum);
   }
 }
-function messageReceived(message) {
-  if ($(".chatContainer").length === 0) {
-    // show popup window
-  } else {
-    console.log("hellloooooooooo man");
-    outputMessageHtml(message);
-  }
-}

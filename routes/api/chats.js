@@ -18,6 +18,14 @@ chatRouter.get("/", async (req, res, next) => {
     .populate("lastestMessage")
     .sort({ updatedAt: -1 })
     .then(async (results) => {
+      if (
+        req.query.unreadOnly !== undefined &&
+        req.query.unreadOnly === "true"
+      ) {
+        results = results.filter(
+          (r) => !r.lastestMessage.readBy.includes(req.session.user._id)
+        );
+      }
       results = await User.populate(results, { path: "lastestMessage.sender" });
       res.status(200).send(results);
     })
