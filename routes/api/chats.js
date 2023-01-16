@@ -23,7 +23,9 @@ chatRouter.get("/", async (req, res, next) => {
         req.query.unreadOnly === "true"
       ) {
         results = results.filter(
-          (r) => !r.lastestMessage.readBy.includes(req.session.user._id)
+          (r) =>
+            r.lastestMessage &&
+            !r.lastestMessage.readBy.includes(req.session.user._id)
         );
       }
       results = await User.populate(results, { path: "lastestMessage.sender" });
@@ -93,6 +95,20 @@ chatRouter.put("/:id", async (req, res, next) => {
       throw new Error("invalid id or no id ");
     }
     await Chat.findByIdAndUpdate(id, req.body);
+    res.sendStatus(204);
+  } catch (error) {
+    let payload = { errorMessage: error };
+    res.sendStatus(400);
+  }
+});
+///api/chats/${chatId}/messages
+chatRouter.put("/:chatId/messages/markAsRead", async (req, res, next) => {
+  try {
+    let chatId = req.params.chatId;
+    await Message.updateMany(
+      { chat: chatId },
+      { $addToSet: { readBy: req.session.user._id } }
+    );
     res.sendStatus(204);
   } catch (error) {
     let payload = { errorMessage: error };

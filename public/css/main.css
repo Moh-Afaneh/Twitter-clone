@@ -632,6 +632,7 @@ nav a:hover {
   border-bottom: 1px solid var(--grayText);
   transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
 }
+
 .resultsListItem:hover {
   background-color: #f2f2f2;
 }
@@ -861,6 +862,18 @@ nav a:hover {
 .resultsListItem.active {
   background-color: var(--border-color);
 }
+.loadingSpinnerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.loadingSpinnerContainer img {
+  width: 50%;
+  max-width: 75px;
+}
 
 #marknotificationsAsRead {
   font-size: 2rem;
@@ -892,9 +905,18 @@ nav a:hover {
   display: flex;
   gap: 1rem;
   max-width: 1200px;
-  justify-content: center;
   margin: 0 auto;
   height: 95%;
+}
+#notificationList {
+  position: fixed;
+  right: 2px;
+  width: 32rem;
+  background-color: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+#notificationList .active {
+  background-color: white;
 }
 @media only screen and (min-width: 1200px) {
   .header > * {

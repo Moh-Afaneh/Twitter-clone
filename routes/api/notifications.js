@@ -14,6 +14,7 @@ notificationsRouter.get("/", async (req, res, next) => {
     const searchObj = {
       userTo: req.session.user._id,
       notificationType: { $ne: "New message" },
+      userForm: { $ne: req.session.user._id },
     };
     if (req.query.unreadOnly !== undefined && req.query.unreadOnly === "true") {
       searchObj.opened = false;

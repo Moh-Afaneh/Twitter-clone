@@ -2,9 +2,14 @@ $(document).ready(() => {
   $.get("/api/notifications", (notifications, status, xhr) => {
     outputNotifications(notifications, $(".resultsContainer"));
   });
+  console.log(notifications);
 });
 function outputNotifications(notifications, continer) {
   notifications.forEach((notification) => {
+    console.log(notification);
+    // if (notification.userForm._id === user._id) {
+    //   return;
+    // }
     console.log(notification);
     const html = creatNotifcationHtml(notification);
     continer.append(html);

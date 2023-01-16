@@ -7,7 +7,9 @@ block content
       +creatChatImage(chat,userLoggedIn)
       span#chatName(data-bs-toggle="modal" data-bs-target="#chatNameModel") 
     .mainContentContainer 
-      .chatContainer
+      .loadingSpinnerContainer
+              img(src="/images/loadingSpinner.gif", alt="Loading spinner")
+      .chatContainer(style="visibility:hidden" ,data-room =chat._id)
               ul.chatMessages
               .typingDots 
                 img(src="/images/dots.gif", alt="typing dots")

@@ -9,16 +9,15 @@ socket.on("messageReceived", (message) => {
   console.log(message);
   messageReceived(message);
 });
-socket.on("notification received", (notification) => {
-  console.log("Connected two");
+socket.on("notificationReceived", () => {
   $.get("/api/notifications/lastest", (notificationData) => {
+    toastNotification(notificationData);
     refreshNotificationsBagde();
   });
 });
 function emitNotification(userId) {
-  console.log(user);
-  if (user._id !== userId) {
+  if (user._id == userId) {
     return;
   }
-  socket.emit("notification received", userId);
+  socket.emit("notificationReceived", userId);
 }

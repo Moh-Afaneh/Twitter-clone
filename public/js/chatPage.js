@@ -34,6 +34,9 @@ $(document).ready(() => {
       const messageHtml = messages.join("");
       addMessagesHtmlToPage(messageHtml);
       scrollToBottom(false);
+      markAsRead();
+      $(".loadingSpinnerContainer").remove();
+      $(".chatContainer").css("visibility", "visible");
     },
   });
 });
@@ -119,7 +122,6 @@ function addMessagesHtmlToPage(html) {
 }
 function createMessageHtml(message, nextMessage, lastSenderId) {
   let sender = message.sender;
-
   let senderName = sender.firstname + " " + sender.lastname;
   let currentSenderId = sender._id;
   let nextSenderId = nextMessage !== null ? nextMessage?.sender?._id : "";
@@ -154,6 +156,7 @@ function createMessageHtml(message, nextMessage, lastSenderId) {
               </div>
           </li>`;
 }
+
 function scrollToBottom(animated) {
   const container = $(".chatMessages");
   const scrollNum = container[0].scrollHeight;
@@ -162,4 +165,12 @@ function scrollToBottom(animated) {
   } else {
     container.scrollTop(scrollNum);
   }
+}
+function markAsRead() {
+  $.ajax({
+    url: `/api/chats/${chatId}/messages/markAsRead`,
+    type: "PUT",
+
+    success: () => refreshMessagesBagde(),
+  });
 }
