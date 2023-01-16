@@ -6,10 +6,9 @@ $(document).ready(() => {
 });
 function outputNotifications(notifications, continer) {
   notifications.forEach((notification) => {
-    console.log(notification);
-    // if (notification.userForm._id === user._id) {
-    //   return;
-    // }
+    if (notification.userForm._id === user._id) {
+      return;
+    }
     console.log(notification);
     const html = creatNotifcationHtml(notification);
     continer.append(html);
