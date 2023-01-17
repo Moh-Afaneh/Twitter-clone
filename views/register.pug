@@ -3,15 +3,34 @@ block content
   .container
     .brand-logo
     .brand-title TWITTER
+    #passwordCheck.hide(role='alert')
+      p The passwords Do not match Try again.
     .inputs
-      form.login-form(action='' method='POST' enctype='multiple/form-data')
-        label EMAIL
-        input#userName.form-control(type="text", name="logUserName" , placeholder="Username or email" , required="" , value=logUserName)
-        label PASSWORD
-        input#password.form-control(type="password", name="logpassword" , placeholder="Enter your password" , required="")
-        label PASSWORD
-        input#password.form-control(type="password", name="logpassword" , placeholder="Enter your password" , required="")
-        label PASSWORD
-        input#password.form-control(type="password", name="logpassword" , placeholder="Enter your password" , required="")
-        button(type='submit' name='' value='register') register
-          a(href="/login") Have an account ?
+      form#registerForm(method="post" onsubmit="event.preventDefault(); validateForm();")
+          label First name
+          input#firstname(type="text", name="firstname" , placeholder="First name" , required="" , value=firstname )
+          label Last name
+          input#lastname(type="text", name="lastname" , placeholder="Last name" , required="" . value=lastname )
+          label Username
+          input#username(type="text", name="username" , placeholder="Username" , required="" ,value=username )
+          label Email
+          input#email(type="email", name="email" , placeholder="Email" , required="" , value=email )
+          label Password
+          input#password(type="password", name="password" , placeholder="password" , required="")
+          label password confirmation
+          input#passwordConf(type="password", name="passwordConf" , placeholder="Confirm password" , required="")
+          button(type='submit' name='' value='register') register
+            a(href="/login") Have an account ?
+    script.
+     const passwordField= document.getElementById("password");
+     const passwordConfirmField= document.getElementById("passwordConf");
+     const registerForm= document.getElementById("registerForm");
+     const alertMessage= document.getElementById("passwordCheck");
+     function validateForm() {
+      if(passwordField.value !== passwordConfirmField.value) {
+       alertMessage.classList.remove("hide")
+       console.log("sssssssssssssssssssssssssss")
+      } else {
+         registerForm.submit();
+      }
+     }

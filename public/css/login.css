@@ -113,3 +113,7 @@ h1 {
   top: 0;
   left: 0;
 }
+.hide {
+  display: none;
+  visibility: none;
+}

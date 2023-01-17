@@ -31,9 +31,6 @@ messageApiRouter.post("/", async (req, res, next) => {
     let chat = await Chat.findByIdAndUpdate(req.body.chatId, {
       lastestMessage: messageCreated,
     });
-
-    insertNotification(chat, messageCreated);
-
     res.status(201).send(messageCreated);
   } catch (error) {
     console.log(error);
